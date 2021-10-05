@@ -18,8 +18,9 @@ class SecretUsers
     false
   end
 
-  def find_by_params(phone, method)
-    result = db_connection.execute('SELECT * FROM secret_users WHERE phone = ? AND method = ? LIMIT 1', phone, method)
+  def find_by_params(params, method)
+    phone = JSON.parse(params)['phone']
+    result = db_connection.execute('SELECT * FROM secret_users WHERE phone = ? AND method = "?"', phone, method)
     if result.empty?
       nil
     else

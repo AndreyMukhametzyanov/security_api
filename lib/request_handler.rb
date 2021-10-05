@@ -6,14 +6,13 @@ require 'json'
 class RequestHandler
 
   attr_reader :request, :params
-
   def initialize(request, url_params)
     @request = request
     @url_params = url_params
   end
 
   def comparison
-    result = SecretUsers.find_by_params(@url_params['phone'], @request.request_method)
+    result = SecretUsers.find_by_params(@request.body.read, @request.request_method)
     puts result
     if result.nil?
       ok_response({ 'service_conclusion' => 'accepted' })
