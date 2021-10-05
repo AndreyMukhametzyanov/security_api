@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'singleton'
 require 'sqlite3'
 
@@ -7,7 +8,7 @@ class SecretUsers
 
   def create(hash)
     if hash.is_a?(Hash)
-      db_connection.execute('INSERT INTO secret_users(phone, comment) VALUES(?,?)', hash[:phone], hash[:comment])
+      db_connection.execute('INSERT INTO secret_users(phone,method,reason) VALUES(?,?,?)', hash[:phone], hash[:method], hash[:reason])
       true
     else
       false
@@ -17,13 +18,13 @@ class SecretUsers
     false
   end
 
-  def find_by_phone(phone)
-    result = db_connection.execute('SELECT * FROM secret_users WHERE phone = ? LIMIT 1', phone)
+  def find_by_params(phone, method)
+    result = db_connection.execute('SELECT * FROM secret_users WHERE phone = ? AND method = ? LIMIT 1', phone, method)
     if result.empty?
       nil
     else
-      id, phone, comment = result.first
-      { id: id, phone: phone, comment: comment }
+      id, phone, method, reason = result.first
+      { id: id, phone: phone, method: method, reason: reason }
     end
   rescue StandardError => e
     puts e.message
@@ -47,3 +48,4 @@ class SecretUsers
     @db_connection ||= SQLite3::Database.open('secret_users.db')
   end
 end
+
