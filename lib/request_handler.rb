@@ -6,6 +6,7 @@ require 'json'
 class RequestHandler
 
   attr_reader :request, :params
+
   def initialize(request, url_params)
     @request = request
     @url_params = url_params
@@ -13,11 +14,10 @@ class RequestHandler
 
   def comparison
     result = SecretUsers.find_by_params(@request.body.read, @request.request_method)
-    puts result
     if result.nil?
       ok_response({ 'service_conclusion' => 'accepted' })
     else
-      ok_response({ 'service_conclusion' => 'forbidden', 'reason' => result['reason'] })
+      ok_response({ 'service_conclusion' => 'forbidden', 'reason' => result[:reason] })
     end
   end
 
