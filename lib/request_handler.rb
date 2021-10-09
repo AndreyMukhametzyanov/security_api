@@ -1,10 +1,10 @@
 # frozen_string_literal: true
+
 require_relative 'secret_users'
 require_relative 'router'
 require 'json'
 
 class RequestHandler
-
   attr_reader :request, :params
 
   def initialize(request, url_params)
@@ -13,7 +13,7 @@ class RequestHandler
   end
 
   def comparison
-    result = SecretUsers.find_by_params(@request.body.read, @request.request_method)
+    result = SecretUsers.find_by_params(@request.body.read)
     if result.nil?
       ok_response({ 'service_conclusion' => 'accepted' })
     else

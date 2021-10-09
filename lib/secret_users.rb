@@ -8,7 +8,8 @@ class SecretUsers
 
   def create(hash)
     if hash.is_a?(Hash)
-      db_connection.execute('INSERT INTO secret_users(phone,method,reason) VALUES(?,?,?)', hash[:phone], hash[:method], hash[:reason])
+      db_connection.execute('INSERT INTO secret_users(phone,method,reason) VALUES(?,?,?)', hash[:phone], hash[:method],
+                            hash[:reason])
       true
     else
       false
@@ -18,11 +19,11 @@ class SecretUsers
     false
   end
 
-  def find_by_params(params, method)
-    phone = JSON.parse(params)['phone']
-    puts phone
-    result = db_connection.execute('SELECT * FROM secret_users WHERE phone = ?', phone)
-    # result = db_connection.execute('SELECT * FROM secret_users WHERE phone = ? AND method = "?"', phone, method)
+  def find_by_params(params)
+    data = JSON.parse(params)
+    phone = data['phone']
+    method = data['method']
+    result = db_connection.execute("SELECT * FROM secret_users WHERE phone = #{phone} AND method = \"#{method}\"")
     if result.empty?
       nil
     else
@@ -51,4 +52,3 @@ class SecretUsers
     @db_connection ||= SQLite3::Database.open('secret_users.db')
   end
 end
-
